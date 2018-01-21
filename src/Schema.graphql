@@ -1,0 +1,84 @@
+scalar DateTime
+
+type Hotel {
+  id: ID!
+  name: String!
+
+  # Stars rating
+  stars: Int!
+
+  # Name of the place where the hotel is, Madrid for example
+  place: String!
+
+  bookings(filters: Filters): [Booking!]!
+}
+
+input Filters {
+  checkinDate: DateTime
+  checkoutDate: DateTime
+  rooms: Int
+  minPrice: Int
+  maxPrice: Int
+
+  # Only used for the subscriptions
+  hotel: ID!
+}
+
+type Booking {
+  id: ID!
+
+  # Timestamp when this booking was created
+  createdAt: DateTime!
+
+  # Timestamp of the expiration time
+  expires: DateTime!
+
+  checkinDate: DateTime!
+  checkoutDate: DateTime!
+
+  rooms: Int!
+  guests: Int!
+
+  # Current price the user is paying
+  currentPrice: Int!
+}
+
+type Query {
+  hotel(id: ID!): Hotel
+}
+
+#
+# SUBSCRIPTIONS
+#
+
+type Subscription {
+  # A new bit for a booking was made
+  bookingClaimed(filters: Filters!): Booking!
+
+  # A new booking became available
+  bookingAdded(filters: Filters!): Booking!
+}
+
+#
+# MUTATIONS
+#
+
+input BookInput {
+  hotelId: ID!
+  checkinDate: DateTime!
+  checkoutDate: DateTime!
+  rooms: Int!
+  guests: Int!
+  price: Int!
+}
+
+type Mutation {
+  claim(hotelId: ID!, bookingId: ID!, price: Int!): Booking!
+  book(input: BookInput!): Booking!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
