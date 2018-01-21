@@ -1,4 +1,5 @@
 const assert = require('assert')
+const axios = require('axios')
 
 const BookingModel = require('../models/BookingModel')
 const HotelModel = require('../models/HotelModel')
@@ -30,7 +31,15 @@ module.exports = {
     const hotel = await HotelModel.findOne({ HotelID: hotelId })
     assert(hotel, 'Hotel not found')
 
-    // TODO: Get candidates
+    const { data } = await axios({
+      method: 'GET',
+      url: process.env.DS_SERVICE,
+      params: {
+        HotelID: hotel.HotelID,
+      },
+    })
+
+    console.log(data)
 
     const booking = await BookingModel.create({
       checkinDate,
@@ -39,6 +48,7 @@ module.exports = {
       nrRooms: rooms,
       currentPrice: price,
       hotelsCombinedPrice: price,
+      candidateIds: data,
     })
 
     pubsub.publish('bookingAdded', { bookingAdded: booking })

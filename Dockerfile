@@ -4,6 +4,6 @@ WORKDIR /usr/travel-bid/src
 
 COPY . .
 
-RUN yarn install --production
+RUN yarn install
 
 ENTRYPOINT [ "yarn", "start" ]
