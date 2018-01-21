@@ -16,7 +16,7 @@ const { SubscriptionServer } = require('subscriptions-transport-ws')
 const resolvers = require('./resolvers')
 
 mongoose
-  .connect('mongodb://localhost:27017/hackathon')
+  .connect('mongodb://db:27017/hackathon')
   .then(() => {
     console.log('Database connection enstablished')
   })

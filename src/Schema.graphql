@@ -4,6 +4,8 @@ type Hotel {
   id: ID!
   name: String!
 
+  picture: String!
+
   # Stars rating
   stars: Int!
 
@@ -16,12 +18,12 @@ type Hotel {
 input Filters {
   checkinDate: DateTime
   checkoutDate: DateTime
-  rooms: Int
+  guests: Int
   minPrice: Int
   maxPrice: Int
 
   # Only used for the subscriptions
-  hotel: ID!
+  hotel: ID
 }
 
 type Booking {

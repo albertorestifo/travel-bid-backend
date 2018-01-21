@@ -31,15 +31,31 @@ module.exports = {
     const hotel = await HotelModel.findOne({ HotelID: hotelId })
     assert(hotel, 'Hotel not found')
 
-    const { data } = await axios({
-      method: 'GET',
-      url: process.env.DS_SERVICE,
-      params: {
-        HotelID: hotel.HotelID,
-      },
-    })
+    let candidateIds = []
+    try {
+      const response = await axios({
+        method: 'GET',
+        url: 'http://candidates:5000/candidates',
+        params: {
+          HotelID: hotel.HotelID,
+        },
+      })
 
-    console.log(data)
+      candidateIds = response.data.map(
+        candidate => candidate.recommended_hotel_id,
+      )
+
+      console.log(`
+
+        FOUND CANDIDATES:
+
+        ${JSON.stringify(response.data, undefined, 4)}
+
+      `)
+    } catch (err) {
+      console.error(err.toString())
+      console.log('No candidates')
+    }
 
     const booking = await BookingModel.create({
       checkinDate,
@@ -48,7 +64,7 @@ module.exports = {
       nrRooms: rooms,
       currentPrice: price,
       hotelsCombinedPrice: price,
-      candidateIds: data,
+      candidateIds,
     })
 
     pubsub.publish('bookingAdded', { bookingAdded: booking })

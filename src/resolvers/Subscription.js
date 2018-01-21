@@ -17,7 +17,7 @@ const filterBooking = (booking, filters = {}) => {
   ) {
     return false
   }
-  if (filters.room && booking.nrRooms !== filters.room) return false
+  if (filters.guests && booking.nrGuests !== filters.guests) return false
   if (filters.minPrice && booking.currentPrice < filters.minPrice) return false
   if (filters.maxPrice && booking.currentPrice > filters.maxPrice) return false
 
